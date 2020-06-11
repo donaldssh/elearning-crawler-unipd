@@ -3,43 +3,11 @@ from selenium import webdriver
 import time
 import os
 import requests
+from unipd_login import *
 
 
-def department(dep, driver):
-    switcher = {
-        "DEI": dei_login(driver),
-        "MATH": math_login(driver)
-    }
-    return switcher.get(dep, "Department not implemented")
-
-
-def dei_login(driver):
-    
-    # base url for the elearning dei
-    url = "https://elearning.dei.unipd.it/mod/page/view.php?id=1673"
-
-    # load the url
-    driver.get(url)
-
-    # go to the login page
-    shib = driver.find_element_by_id("shibbox")
-    img = shib.find_element_by_css_selector(".img-responsive").click()
-
-
-def math_login(driver):
-    
-    url = "https://elearning.unipd.it/math/my/?myoverviewtab=courses"
-    
-    # load the url
-    driver.get(url)
-    
-    # go to the login page
-    shib = driver.find_element_by_id("shib_si")
-    img = shib.find_elements_by_tag_name("a")[0].click()
-    
     
 def main():    
-
 
     # input parameters: department, course and video
     dep_name = "DEI"
@@ -47,10 +15,6 @@ def main():
     video_name = "VIDEO NAME"
     # instead of video_name i can search also for kaltura video resource.., if i want to dowload all
 
-    # read the username and password of elearning dei unipd
-    lines = open("pwd.asd").readlines()
-    usr = lines[0].replace("\n", "");
-    pwd = lines[1].replace("\n", "");
 
     # set some useful options, like download in the same directory
     firefoxOptions = Options()
@@ -65,6 +29,7 @@ def main():
     #wait 10 seconds when doing a find_element before carrying on
     driver.implicitly_wait(10) 
 
+    usr, pwd = read_pwd_from_asd()
 
     # find the login button based on the department
     department(dep_name, driver)
