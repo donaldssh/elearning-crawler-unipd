@@ -1,4 +1,5 @@
 from selenium import webdriver
+import getpass
 
 def department(dep, driver):
     switcher = {
@@ -35,11 +36,10 @@ def math_login(driver):
     return
     
 
-def read_pwd_from_asd():
+def input_data():
     
-    lines = open("pwd.asd").readlines()
-    usr = lines[0].replace("\n", "")
-    pwd = lines[1].replace("\n", "")
+    usr = input("Enter your email address: ")
+    pwd = getpass.getpass('Password:')
     
     return usr, pwd
     

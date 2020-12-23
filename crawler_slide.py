@@ -28,7 +28,7 @@ def main():
     #wait 10 seconds when doing a find_element before carrying on
     driver.implicitly_wait(10) 
     
-    usr, pwd = read_pwd_from_asd()
+    usr, pwd = input_data()
 
     # find the login button based on the department
     department(dep_name, driver)
