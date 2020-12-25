@@ -4,19 +4,19 @@ import time
 import os
 import requests
 from unipd_login import *
+import argparse
 
-
-def main():   
+def main(dep, course):      
     
     # input parameters: department, course and download dir
-    dep_name = "SET HERE THE DPT"
-    course_name = "SET HERE THE COURSE NAME"
+    dep_name = dep.upper()
+    course_name = course.upper()
     download_dir = os.getcwd()+"/slides"
 
     mime_types = "application/pdf,application/vnd.adobe.xfdf,application/vnd.fdf,application/vnd.adobe.xdp+xml"
 
     firefoxOptions = Options()
-    firefoxOptions.set_preference("browser.download.folderList",2)
+    firefoxOptions.set_preference("browser.download.folderList", 2)
     firefoxOptions.set_preference("browser.download.manager.showWhenStarting", False)
     firefoxOptions.set_preference("browser.download.dir", download_dir)
     firefoxOptions.set_preference("browser.helperApps.neverAsk.saveToDisk", mime_types)
@@ -25,7 +25,7 @@ def main():
     # load firefox geckodriver with dowload options
     driver = webdriver.Firefox(options=firefoxOptions)
     
-    #wait 10 seconds when doing a find_element before carrying on
+    # wait 10 seconds when doing a find_element before carrying on
     driver.implicitly_wait(10) 
     
     usr, pwd = input_data()
@@ -64,8 +64,17 @@ def main():
 
         driver.execute_script("window.history.go(-1)")
 
-    # driver.close()
+    driver.close()
 
 
 if __name__ == "__main__":
-    main()
+    
+    parser = argparse.ArgumentParser(description="Download the slides of the selected course")
+    
+    parser.add_argument("--dep", required=True, help="department of the course")
+    parser.add_argument("--course", required=True, help="name of the course")
+    
+    args = parser.parse_args()
+    
+    main(dep=args.dep, course=args.course)    
+    

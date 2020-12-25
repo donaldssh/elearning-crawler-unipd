@@ -4,16 +4,13 @@ import time
 import os
 import requests
 from unipd_login import *
+import argparse
 
-
-def main():    
+def main(dep, course, video_name):    
 
     # input parameters: department, course and video
-    dep_name = "DEI"
-    course_name = "COURSE NAME"
-    video_name = "VIDEO NAME"
-    # instead of video_name i can search also for kaltura video resource.., if i want to dowload all
-
+    dep_name = dep.upper()
+    course_name = course.upper()
 
     # set some useful options, like download in the same directory
     firefoxOptions = Options()
@@ -25,7 +22,7 @@ def main():
     # load firefox geckodriver with dowload options
     driver = webdriver.Firefox(options=firefoxOptions)
 
-    #wait 10 seconds when doing a find_element before carrying on
+    # wait 10 seconds when doing a find_element before carrying on
     driver.implicitly_wait(10) 
     
     usr, pwd = input_data()
@@ -90,4 +87,13 @@ def main():
     driver.close()
 
 if __name__ == "__main__":
-    main()
+    
+    parser = argparse.ArgumentParser(description="Download the playlist .m3u8 of the video lecture selected")
+    
+    parser.add_argument("--dep", required=True, help="department of the course")
+    parser.add_argument("--course", required=True, help="name of the course")
+    parser.add_argument("--video", required=True, help="name of the video to be downloaded")
+    
+    args = parser.parse_args()
+    
+    main(dep=args.dep, course=args.course, video_name=args.video)    

@@ -3,24 +3,13 @@ from selenium import webdriver
 import time
 import os
 import requests
-
-# pass command line arguments
-import sys
-
 from unipd_login import *
-    
-    
-def main():   
-    
-    # pass the video index by running python crawler_video.py index_video
-    # this is just to dowload a single video
-    index_video = -1
-    if(len(sys.argv)==2):
-        index_video =  int(sys.argv[1])
+import argparse
 
-    # input parameters: department, course and video
-    dep_name = "DEI"
-    course_name = "COURSE NAME"
+def main(dep, course, index_video):   
+
+    dep_name = dep.upper()
+    course_name = course.upper()
     
     video_tag = "Kaltura Video Resource"
     download_dir = os.getcwd()
@@ -29,7 +18,7 @@ def main():
 
     # set some useful options, like download in the same directory
     firefoxOptions = Options()
-    firefoxOptions.set_preference("browser.download.folderList",2)
+    firefoxOptions.set_preference("browser.download.folderList", 2)
     firefoxOptions.set_preference("browser.download.manager.showWhenStarting", False)
     firefoxOptions.set_preference("browser.download.dir", download_dir)
     
@@ -64,8 +53,6 @@ def main():
 
     # find and click over the selected video
     all_videos = driver.find_elements_by_xpath("//*[span[contains(text(),'"+video_tag+"')]]")
-    # print(all_videos)
-    # print(all_videos[i])
     
     all_videos[index_video].click()
 
@@ -104,4 +91,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    
+    parser = argparse.ArgumentParser(description="Download the playlist .m3u8 of the video lecture selected")
+    
+    parser.add_argument("--dep", required=True, help="department of the course")
+    parser.add_argument("--course", required=True, help="name of the course")
+    parser.add_argument("--index", required=False, help="index of the video to be downloaded")
+    
+    args = parser.parse_args()
+    
+    main(dep=args.dep, course=args.course, index_video=args.index)    
+    
