@@ -6,7 +6,8 @@ import requests
 from unipd_login import *
 import argparse
 
-def main(dep, course, video_name):    
+
+def main(dep, course, video_name):
 
     # input parameters: department, course and video
     dep_name = dep.upper()
@@ -14,7 +15,7 @@ def main(dep, course, video_name):
 
     # set some useful options, like download in the same directory
     firefoxOptions = Options()
-    firefoxOptions.set_preference("browser.download.folderList",2)
+    firefoxOptions.set_preference("browser.download.folderList", 2)
     firefoxOptions.set_preference("browser.download.manager.showWhenStarting", False)
     firefoxOptions.set_preference("browser.download.dir", os.getcwd())
     firefoxOptions.set_preference("browser.helperApps.neverAsk.saveToDisk", True)
@@ -23,8 +24,8 @@ def main(dep, course, video_name):
     driver = webdriver.Firefox(options=firefoxOptions)
 
     # wait 10 seconds when doing a find_element before carrying on
-    driver.implicitly_wait(10) 
-    
+    driver.implicitly_wait(10)
+
     usr, pwd = input_data()
 
     # find the login button based on the department
@@ -45,13 +46,15 @@ def main(dep, course, video_name):
     driver.find_element_by_id("login_button_js").click()
 
     # find and click over the selected course
-    driver.find_element_by_partial_link_text(course_name).click();
+    driver.find_element_by_partial_link_text(course_name).click()
 
     # find and click over the selected video
-    driver.find_element_by_xpath("//span[contains(text(),'"+video_name+"')]").click()
+    driver.find_element_by_xpath(
+        "//span[contains(text(),'" + video_name + "')]"
+    ).click()
 
-    #all_cookies = driver.get_cookies()
-    #print(all_cookies)
+    # all_cookies = driver.get_cookies()
+    # print(all_cookies)
 
     # find the src of the kaltura video only
     url_videobase = driver.find_element_by_id("contentframe").get_attribute("src")
@@ -62,7 +65,7 @@ def main(dep, course, video_name):
 
     # find the iframe dynamically generated tag and search inside it
     driver.switch_to.default_content()
-    frame = driver.find_element_by_xpath('//iframe')
+    frame = driver.find_element_by_xpath("//iframe")
     driver.switch_to.frame(frame)
 
     # find the src for the a.m3u8
@@ -72,7 +75,7 @@ def main(dep, course, video_name):
     r = requests.get(url_video2)
 
     # write the a.m3u8 as txt
-    with open("./a.txt", 'wb') as f:
+    with open("./a.txt", "wb") as f:
         f.write(r.content)
 
     # read all the video links inside the a.txt
@@ -86,14 +89,19 @@ def main(dep, course, video_name):
 
     driver.close()
 
+
 if __name__ == "__main__":
-    
-    parser = argparse.ArgumentParser(description="Download the playlist .m3u8 of the video lecture selected")
-    
+
+    parser = argparse.ArgumentParser(
+        description="Download the playlist .m3u8 of the video lecture selected"
+    )
+
     parser.add_argument("--dep", required=True, help="department of the course")
     parser.add_argument("--course", required=True, help="name of the course")
-    parser.add_argument("--video", required=True, help="name of the video to be downloaded")
-    
+    parser.add_argument(
+        "--video", required=True, help="name of the video to be downloaded"
+    )
+
     args = parser.parse_args()
-    
-    main(dep=args.dep, course=args.course, video_name=args.video)    
+
+    main(dep=args.dep, course=args.course, video_name=args.video)

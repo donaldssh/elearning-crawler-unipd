@@ -6,12 +6,13 @@ import requests
 from unipd_login import *
 import argparse
 
-def main(dep, course):      
-    
+
+def main(dep, course):
+
     # input parameters: department, course and download dir
     dep_name = dep.upper()
     course_name = course.upper()
-    download_dir = os.getcwd()+"/slides"
+    download_dir = os.getcwd() + "/slides"
 
     mime_types = "application/pdf,application/vnd.adobe.xfdf,application/vnd.fdf,application/vnd.adobe.xdp+xml"
 
@@ -20,22 +21,22 @@ def main(dep, course):
     firefoxOptions.set_preference("browser.download.manager.showWhenStarting", False)
     firefoxOptions.set_preference("browser.download.dir", download_dir)
     firefoxOptions.set_preference("browser.helperApps.neverAsk.saveToDisk", mime_types)
-    firefoxOptions.set_preference("pdfjs.disabled", True) 
+    firefoxOptions.set_preference("pdfjs.disabled", True)
 
     # load firefox geckodriver with dowload options
     driver = webdriver.Firefox(options=firefoxOptions)
-    
+
     # wait 10 seconds when doing a find_element before carrying on
-    driver.implicitly_wait(10) 
-    
+    driver.implicitly_wait(10)
+
     usr, pwd = input_data()
 
     # find the login button based on the department
     department(dep_name, driver)
-    
+
     # wait some more seconds for the loading
     time.sleep(5)
-    
+
     # get the input box of username and password
     username = driver.find_element_by_id("j_username_js")
     password = driver.find_element_by_id("password")
@@ -45,19 +46,18 @@ def main(dep, course):
 
     # sign in
     driver.find_element_by_id("login_button_js").click()
-    
+
     # find and click over the selected course
     course = driver.find_element_by_partial_link_text(course_name).click()
 
-    
     # find all the slides
     slides = driver.find_elements_by_xpath("//*[span[contains(text(),'File')]]")
-    print(str(len(slides)) + ' slides are goind to be downloaded')
+    print(str(len(slides)) + " slides are goind to be downloaded")
 
     for i in range(len(slides)):
 
         slides[i].click()
-        
+
         driver.find_element_by_id("download").click()
 
         time.sleep(1)
@@ -68,13 +68,14 @@ def main(dep, course):
 
 
 if __name__ == "__main__":
-    
-    parser = argparse.ArgumentParser(description="Download the slides of the selected course")
-    
+
+    parser = argparse.ArgumentParser(
+        description="Download the slides of the selected course"
+    )
+
     parser.add_argument("--dep", required=True, help="department of the course")
     parser.add_argument("--course", required=True, help="name of the course")
-    
+
     args = parser.parse_args()
-    
-    main(dep=args.dep, course=args.course)    
-    
+
+    main(dep=args.dep, course=args.course)
