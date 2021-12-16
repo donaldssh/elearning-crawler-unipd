@@ -10,7 +10,7 @@ import argparse
 def main(dep, course, index_video):
 
     dep_name = dep.upper()
-    course_name = course.upper()
+    course_name = course
 
     video_tag = "Kaltura Video Resource"
     download_dir = os.getcwd()

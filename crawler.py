@@ -11,7 +11,8 @@ def main(dep, course, video_name):
 
     # input parameters: department, course and video
     dep_name = dep.upper()
-    course_name = course.upper()
+    course_name = course
+    usr, pwd = input_data()
 
     # set some useful options, like download in the same directory
     firefoxOptions = Options()
@@ -25,8 +26,6 @@ def main(dep, course, video_name):
 
     # wait 10 seconds when doing a find_element before carrying on
     driver.implicitly_wait(10)
-
-    usr, pwd = input_data()
 
     # find the login button based on the department
     department(dep_name, driver)
